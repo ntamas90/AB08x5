@@ -1,29 +1,10 @@
-# README #
+# DESCRIPTION #
+This is a test repo for AB08x5 driver. It contains the driver sources and the test source. 
 
-This README would normally document whatever steps are necessary to get your application up and running.
+https://abracon.com/Support/AppsManuals/Precisiontiming/AB08XX-Application-Manual.pdf
 
-### What is this repository for? ###
+# GOALS #
+I will test a few functions and I use them in the future for any MCU.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+# AUTHOR #
+* created by Tamas Nemeth @2021
