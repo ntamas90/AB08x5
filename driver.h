@@ -11,6 +11,12 @@
 #ifndef DRIVER_H_
 #define DRIVER_H_
 
+#include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <stdbool.h>
+#include "regs.h"
+
 #define kHz(x)		(x*1000)
 #define MHz(x)		(x*1000000)
 #define I2C_ADDRESS	(0xD2)
@@ -28,7 +34,7 @@ extern iface_type iface_sel;
 
 //These defines must fit the currently used MCU
 bool 	Get_SDIPin();						//Current MCU<->AB08x5 SDI digital pin read
-void	Interface_selector(int8_t iface_sel);
+void	Interface_selector(iface_type iface_sel);
 
 //I2C functions
 bool	Init_I2C(uint32_t speed, uint8_t address);		//I2C interface init
@@ -49,5 +55,7 @@ uint8_t SPI_Read();						//SPI read one byte
 void RTC_Init();
 bool Write_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);	//Write AB08x5 register
 bool Read_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);		//Read AB08x5 register
+void RTC_ReadDate(uint8_t* buf, uint8_t len);						//Read actual date in YY.MM.DD format
+void RTC_ReadTime(uint8_t* buf, uint8_t len);						//Read actual time in HH.MM.SS format
 
 #endif /* DRIVER_H_ */
