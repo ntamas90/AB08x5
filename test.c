@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "driver.h"
+#include <ctype.h>
 
 //test data
 bool 	sdipin	= true;
@@ -21,43 +22,71 @@ int main(int argc, char **argv) {
   RTC_Init();
 
   //Test begin
-  uint8_t testnum = 0;
-
   printf("\r\n****************************************** Test software for AB08x5 RTC ******************************************\r\n");
 
   while(1){
+    fflush(stdin);
+    char testnum = 0;
+
     printf("You can choose from test methods below:\r\n");
-    printf("\t1. Test Date read\r\n");
-    printf("\t2. Test Time read\r\n");
-    printf("\t3. Test RAM read\r\n");
-    printf("\t4. EXIT\r\n");
+    printf("\t1. Date read\r\n");
+    printf("\t2. Time read\r\n");
+    printf("\t3. Date write\r\n");
+    printf("\t4. Time write\r\n");
+    printf("\t5. RAM read\r\n");
+    printf("\t6. RAM write\r\n");
+    printf("\t7. EXIT\r\n");
 
     printf("Select: ");
-    scanf("%d", &testnum);
+    scanf("%c", (char*)&testnum);
     printf("\r\n");
 
-    switch(testnum){
-      case 1:{
-	printf("Run Date test...\r\n");
-	uint8_t date[16] = {0};
-	RTC_ReadDate(date, sizeof(date));
-	printf("Actual date is (YY.MM.DD) %s.\r\n", date);
-      }break;
-      case 2:{
-	printf("Run Time test...\r\n");
-	uint8_t time[16] = {0};
-	RTC_ReadTime(time, sizeof(time));
-	printf("Actual date is (HH.MM.SS) %s.\r\n", time);
-      }break;
-      case 4:{
-	return 0;
-      }break;
+    testnum -= 0x30;
 
-      default:{
-	printf("The selected test unfortunately not exist!\r\n");
+    if(testnum>0 && testnum<=7){
+      switch(testnum){
+	case 1:{
+	  printf("Date read test running...\r\n");
+	  uint8_t date[16] = {0};
+	  RTC_ReadDate(date, sizeof(date));
+	  printf("Actual date is (YY.MM.DD) %s\r\n", date);
+	}break;
+
+	case 2:{
+	  printf("Time read test running...\r\n");
+	  uint8_t time[16] = {0};
+	  RTC_ReadTime(time, sizeof(time));
+	  printf("Actual date is (HH.MM.SS) %s\r\n", time);
+	}break;
+
+	case 3:{
+	  printf("Date write test running...\r\n");
+	  char date[16];
+	  printf("Please type the new date (YY.MM.DD): ");
+	  scanf("%s", &date);
+	  if(RTC_SetDate(date)) printf("New date is (YY.MM.DD) %s\r\n", date);
+	}break;
+
+	case 4:{
+	  printf("Time write test running...\r\n");
+	  char time[16];
+	  printf("Please type the new time (HH:MM:SS): ");
+	  scanf("%s", &time);
+	  if(RTC_SetTime(time)) printf("New time is (HH:MM:SS) %s\r\n", time);
+	}break;
+
+	case 7:{
+	  return 0;
+	}break;
+
+	default:{
+	  printf("The selected test unfortunately not exist!\r\n");
+	}
       }
-    }
 
-    printf("\r\n\r\n\r\n");
+      printf("\r\n\r\n\r\n");
+    }else{
+	printf("This test number is not valid!\r\n");
+    }
   }
 }

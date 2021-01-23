@@ -13,13 +13,24 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <string.h>
+#include <malloc.h>
 #include "regs.h"
 
 #define kHz(x)		(x*1000)
 #define MHz(x)		(x*1000000)
 #define I2C_ADDRESS	(0xD2)
+
+#define CHK_BCD(x)	((x>=0x00 && x<=0x09)?(true):(false))
+#define CHK_YEAR(x)	((x>=0x00 && x<=0x99)?(true):(false))
+#define CHK_MONTH(x)	((x>=0x01 && x<=0x12)?(true):(false))
+#define CHK_DAY(x)	((x>=0x01 && x<=0x31)?(true):(false))
+#define CHK_HOUR(x)	((x>=0x00 && x<=0x23)?(true):(false))
+#define CHK_MIN(x)	((x>=0x00 && x<=0x59)?(true):(false))
+#define CHK_SEC(x)	((x>=0x00 && x<=0x59)?(true):(false))
 
 typedef enum{
    IFACE_RESET = -1,
@@ -57,5 +68,7 @@ bool Write_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);
 bool Read_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);		//Read AB08x5 register
 void RTC_ReadDate(uint8_t* buf, uint8_t len);						//Read actual date in YY.MM.DD format
 void RTC_ReadTime(uint8_t* buf, uint8_t len);						//Read actual time in HH.MM.SS format
+bool RTC_SetDate(char* str);								//Write actual date in YY.MM.DD format
+bool RTC_SetTime(char* str);								//Write actual time in HH.MM.SS format
 
 #endif /* DRIVER_H_ */
