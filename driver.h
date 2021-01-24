@@ -63,12 +63,14 @@ void	SPI_ReadMulti(uint8_t* buf, uint8_t len);		//SPI read multi byte function
 uint8_t SPI_Read();						//SPI read one byte
 
 //RTC functions
-void RTC_Init();
-bool Write_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);	//Write AB08x5 register
-bool Read_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);		//Read AB08x5 register
-void RTC_ReadDate(uint8_t* buf, uint8_t len);						//Read actual date in YY.MM.DD format
-void RTC_ReadTime(uint8_t* buf, uint8_t len);						//Read actual time in HH.MM.SS format
-bool RTC_SetDate(char* str);								//Write actual date in YY.MM.DD format
-bool RTC_SetTime(char* str);								//Write actual time in HH.MM.SS format
+void 	RTC_Init();
+bool 	Write_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);		//Write AB08x5 register
+bool 	Read_reg(iface_type iface_sel, uint8_t offset, uint8_t*buf,  uint8_t len);		//Read AB08x5 register
+void 	RTC_ReadDate(uint8_t* buf, uint8_t len);						//Read actual date in YY.MM.DD format
+void 	RTC_ReadTime(uint8_t* buf, uint8_t len);						//Read actual time in HH.MM.SS format
+bool 	RTC_SetDate(char* str);									//Write actual date in YY.MM.DD format
+bool 	RTC_SetTime(char* str);									//Write actual time in HH.MM.SS format
+int 	RTC_ReadRAMByte(bool section, uint8_t offset);
+bool	RTC_WriteRAMByte(bool section, uint8_t offset, uint8_t value);
 
 #endif /* DRIVER_H_ */

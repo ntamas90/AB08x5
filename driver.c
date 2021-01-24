@@ -189,8 +189,8 @@
  /*
  * Function description: Set RTC Actual Date (YY.MM.DD)
  * -----------------------------------
- * Parameters: 	none
- * Return value: none
+ * Parameters: 	input string
+ * Return value: bool - success:true, fail:false
  */
  bool RTC_SetDate(char* str){
    if((strlen(str) == DATE_STR_LEN-1) && str[2]=='.' && str[5]=='.'){					//check input length
@@ -226,8 +226,8 @@
  /*
  * Function description: Set RTC Actual Time (HH:MM:SS)
  * -----------------------------------
- * Parameters: 	none
- * Return value: none
+ * Parameters: 	input string
+ * Return value: bool - success:true, fail:false
  */
  bool RTC_SetTime(char* str){
    if((strlen(str) == TIME_STR_LEN-1) && str[2]==':' && str[5]==':'){					//check input length
@@ -258,6 +258,62 @@
        printf("RTC_SetTime wrong input format!\r\n");
        return false;
    }
+ }
+
+ /*
+ * Function description: Read RTC RAM
+ * -----------------------------------
+ * Parameters: 	 bool section - 0:RAM1/1:RAM2
+ * 		 uint8_t offset - byte number
+ * Return value: int - read byte or -1 fail
+ */
+ int RTC_ReadRAMByte(bool section, uint8_t offset){
+   uint8_t tmp;
+
+   if((iface_sel == IFACE_SPI) && (section == true)){	//Not valid section!
+       printf("Not valid RAM section!");
+       return -1;
+   }
+
+   if(offset > 0x3F){					//Out of range!
+       printf("Out of range!\r\n");
+       return -1;
+   }
+
+   if(!section){
+       Read_reg(iface_sel, RAM_1_LOW+offset, &tmp, 1);
+   }else{
+       Read_reg(iface_sel, RAM_2_LOW+offset, &tmp, 1);
+   }
+
+   return tmp;
+ }
+
+ /*
+ * Function description: Read RTC RAM
+ * -----------------------------------
+ * Parameters: 	 bool section - 0:RAM1/1:RAM2
+ * 		 uint8_t offset - byte number
+ * Return value: int - read byte or -1 fail
+ */
+ bool RTC_WriteRAMByte(bool section, uint8_t offset, uint8_t value){
+    if((iface_sel == IFACE_SPI) && (section == true)){	//Not valid section!
+       printf("Not valid RAM section!");
+       return false;
+   }
+
+   if(offset > 0x3F){					//Out of range!
+       printf("Out of range!\r\n");
+       return false;
+   }
+
+   if(!section){
+       Write_reg(iface_sel, RAM_1_LOW+offset, &value, 1);
+   }else{
+       Write_reg(iface_sel, RAM_2_LOW+offset, &value, 1);
+   }
+
+   return true;
  }
  /****************************************** RTC main functions end ******************************************/
 

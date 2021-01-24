@@ -12,7 +12,8 @@
 
 //test data
 bool 	sdipin	= true;
-uint8_t rtc_registers[] = {0x90, 0x10, 0x05, 0x17, 0x22, 0x01, 0x21, 0x04}; //Registers from 0x00 - 0x07
+uint8_t rtc_registers[256];
+uint8_t rtc_reg_init[8] = {0x90, 0x10, 0x05, 0x17, 0x22, 0x01, 0x21, 0x04}; //Registers from 0x00 - 0x07
 
 int main(int argc, char **argv) {
   system("cls");
@@ -22,6 +23,9 @@ int main(int argc, char **argv) {
   RTC_Init();
 
   //Test begin
+  memset(rtc_registers, 0, sizeof(rtc_registers));					//Reset all register value
+  memcpy((uint8_t*)&rtc_registers[0], rtc_reg_init, sizeof(rtc_reg_init));		//Fill registers with test values
+
   printf("\r\n****************************************** Test software for AB08x5 RTC ******************************************\r\n");
 
   while(1){
@@ -33,8 +37,8 @@ int main(int argc, char **argv) {
     printf("\t2. Time read\r\n");
     printf("\t3. Date write\r\n");
     printf("\t4. Time write\r\n");
-    printf("\t5. RAM read\r\n");
-    printf("\t6. RAM write\r\n");
+    printf("\t5. RAM? read\r\n");
+    printf("\t6. RAM? write\r\n");
     printf("\t7. EXIT\r\n");
 
     printf("Select: ");
@@ -73,6 +77,61 @@ int main(int argc, char **argv) {
 	  printf("Please type the new time (HH:MM:SS): ");
 	  scanf("%s", &time);
 	  if(RTC_SetTime(time)) printf("New time is (HH:MM:SS) %s\r\n", time);
+	}break;
+
+	case 5:{
+	  fflush(stdin);
+	  printf("RAM read test running...\r\n");
+	  char ramnum, offset[3];
+	  uint8_t offs;
+	  printf("RAM number: ");
+	  scanf("%c", (char*)&ramnum);
+	  fflush(stdin);
+	  printf("\r\n");
+	  printf("RAM offset(00-3F): ");
+	  scanf("%c%c", (char*)&offset[0], (char*)&offset[1]);
+	  fflush(stdin);
+	  printf("\r\n");
+
+	  ramnum -= 0x30;
+	  offs	 = atoi(&offset[0]);
+	  printf("ramnum: %d offset: %02x\r\n", ramnum, offs);
+
+	  if(ramnum>=0 && ramnum<2){
+	      printf("RAM read value: %02X\r\n", RTC_ReadRAMByte(ramnum, offs));
+	  }else{
+	      printf("Invalid RAM number!\r\n");
+	  }
+	}break;
+
+	case 6:{
+	  fflush(stdin);
+	  printf("RAM write test running...\r\n");
+	  char ramnum, offset[3], value[3];
+	  uint8_t offs, val;
+	  printf("RAM number: ");
+	  scanf("%c", (char*)&ramnum);
+	  fflush(stdin);
+	  printf("\r\n");
+	  printf("RAM offset(00-3F): ");
+	  scanf("%c%c", (char*)&offset[0], (char*)&offset[1]);
+	  fflush(stdin);
+	  printf("\r\n");
+	  printf("RAM value(00-FF): ");
+	  scanf("%c%c", (char*)&value[0], (char*)&value[1]);
+	  fflush(stdin);
+	  printf("\r\n");
+
+	  ramnum -= 0x30;
+	  offs	 = atoi(&offset[0]);
+	  val	 = atoi(&value[0]);
+
+	  printf("ramnum: %d offset: %02x val: %02x\r\n", ramnum, offs, val);
+	  if(ramnum>=0 && ramnum<2){
+	      (RTC_WriteRAMByte(ramnum, offs, val) == true)?(printf("RTC RAM Write OK!\r\n")):(printf("RTC RAM Write Fail!\r\n"));
+	  }else{
+	      printf("Invalid RAM number!\r\n");
+	  }
 	}break;
 
 	case 7:{
